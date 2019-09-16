@@ -1,15 +1,19 @@
-FROM python:3
-USER root
+FROM python:3.7.3-slim-stretch
 
-RUN apt-get update
-RUN apt-get -y install locales && \
-    localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
-ENV LANG ja_JP.UTF-8
-ENV LANGUAGE ja_JP:ja
-ENV LC_ALL ja_JP.UTF-8
-ENV TZ JST-9
-ENV TERM xterm
+ENV PYTHONPATH "/opt/python/library"
 
-RUN apt-get install -y vim less
-RUN pip install --upgrade pip
-RUN pip install --upgrade setuptools
+COPY volume/requirements.txt /tmp/requirements.txt
+
+RUN set -x && \
+    pip install -U pip && \
+    pip install -r /tmp/requirements.txt && \
+    mkdir -p /opt/python/library && \
+    mkdir -p /opt/python/jupyter && \
+    mkdir -p /opt/python/jupyterlab && \
+    mkdir ~/.jupyter && \
+    rm /tmp/requirements.txt
+
+COPY ./jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
+
+EXPOSE 8888
+CMD ["jupyter", "lab", "--allow-root"]

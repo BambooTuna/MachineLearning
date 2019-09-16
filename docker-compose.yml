@@ -5,4 +5,9 @@ services:
     build: .
     tty: true
     volumes:
-      - ./volume:/boot
+      - ./volume/boot:/boot
+      - ./volume/opt/jupyter:/opt/python/jupyter
+      - ./volume/opt/jupyterlab:/opt/python/jupyterlab
+      - ./volume/opt/library:/opt/python/library
+    ports:
+      - 8888:8888
